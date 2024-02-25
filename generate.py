@@ -2,11 +2,12 @@ import json
 import sys
 import pyproj
 from shapely.geometry import Point, Polygon
-from hilbertcurve.hilbertcurve import HilbertCurve
+from lsystems import GosperCurve, MooreCurve
 
 # Grid specification
 
-CURVE_LEVEL = 11  # Should be an even number
+CURVE_TYPE = GosperCurve(5)
+SPACING_FACTOR = 3.5  # Increase above 1 to try and get higher curves to work
 SITE_BOUNDARY = [
     [-264611.6552161462605, 6807182.048061979934573],
     [-264574.089565280301031, 6807271.157280313782394],
@@ -157,23 +158,16 @@ for x, y in SITE_BOUNDARY[1:]:
 size_x = max_x - min_x
 size_y = max_y - min_y
 
-# Find the maximum curve dimension the dumb way (I forget the equation)
-curve = HilbertCurve(CURVE_LEVEL, 2)
-hilbert_points = int((2**CURVE_LEVEL) - (1 / (2**CURVE_LEVEL))) + 1
-max_curve_x = 0
-max_curve_y = 0
-for i in range(hilbert_points):
-    x, y = curve.point_from_distance(i)
-    max_curve_x = max(max_curve_x, x)
-    max_curve_y = max(max_curve_y, y)
-
+# Enumerate all points on the curve and find its bounds
+curve_points = list(CURVE_TYPE.to_relative_coordinates())
 # Go through and generate a list of all curve points within the boundary
 boundary_polygon = Polygon(SITE_BOUNDARY)
 valid_points = []
-for i in range(hilbert_points):
-    cx, cy = curve.point_from_distance(i)
-    x = min_x + ((cx / max_curve_x) * size_x)
-    y = min_y + ((cy / max_curve_y) * size_y)
+for cx, cy in curve_points:
+    cx = (cx * SPACING_FACTOR) - ((SPACING_FACTOR - 1) / 2)
+    cy = (cy * SPACING_FACTOR) - ((SPACING_FACTOR - 1) / 2)
+    x = min_x + (cx * size_x)
+    y = min_y + (cy * size_y)
     if boundary_polygon.contains(Point(x, y)):
         valid_points.append((x, y))
 
