@@ -1,0 +1,47 @@
+<html>
+    <head>
+        <title>Emoji Coords</title>
+        <script type="text/javascript" src="data.js"></script>
+        <script type="text/javascript" src="map_style.js"></script>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script>
+        <link href="https://unpkg.com/maplibre-gl@2.2.1/dist/maplibre-gl.css" rel='stylesheet' />
+        <script src="https://unpkg.com/maplibre-gl@2.2.1/dist/maplibre-gl.js"></script>
+        <script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet@0.0.20/leaflet-maplibre-gl.js"></script>
+        <style>
+            html, body, div {
+                margin:0;
+                padding:0;
+            }
+            #map {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+            }
+            .leaflet-div-icon {
+                background: transparent;
+                border: 0;
+                font-size: 20px;
+                text-shadow: #fff 0 0 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="map"></div>
+        <script>
+            var map = L.map('map').setView([52.0415,-2.3775], 17);
+
+            L.maplibreGL({style: map_style}).addTo(map);
+
+            // L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            //     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            // }).addTo(map);
+
+            L.geoJSON(featureCollection, {
+                pointToLayer: function (feature, latlng) {
+                    return L.marker(latlng, {icon: new L.DivIcon({html: feature.properties.name})});
+                }
+            }).addTo(map);
+        </script>
+    </body>
+</html>
