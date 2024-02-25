@@ -2,7 +2,7 @@ import json
 import sys
 import pyproj
 from shapely.geometry import Point, Polygon
-from lsystems import GosperCurve, MooreCurve
+from lsystems import GosperCurve, MooreCurve, TerdragonCurve
 
 # Grid specification
 

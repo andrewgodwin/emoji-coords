@@ -3,6 +3,7 @@ class LSystem:
     axiom: str
     replacements: dict[str, str]
     angle_delta: int
+    draw: str
     movements = {
         0: (1, 0),
         60: (0.5, 0.86603),
@@ -73,4 +74,14 @@ class MooreCurve(LSystem):
         "R": "+LF-RFR-FL+",
     }
     angle_delta = 90
+    draw = "F"
+
+
+class TerdragonCurve(LSystem):
+
+    axiom = "F"
+    replacements = {
+        "F": "F+F-F",
+    }
+    angle_delta = 120
     draw = "F"
